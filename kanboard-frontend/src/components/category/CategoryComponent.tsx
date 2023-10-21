@@ -1,17 +1,20 @@
-import React from "react";
+import React, {useRef} from "react";
 import {Category, Task} from "../../app/types";
 import {useAppSelector} from "../../app/hooks";
 import {selectTasksByCategories} from "../../slices/kanboard/kanboardSlice";
 import styled from "styled-components";
 import {TitleWrapper} from "../helpers/TitleWrapper";
 import {TaskComponent} from "../task/TaskComponent";
+import {DropZone} from 'react-aria-components';
+import {TextDropItem, useDrop} from "react-aria";
 
 const CategoryTitle = styled.h2`
 `
+interface CategoryWrapperProps{
+    dropping : boolean;
+}
 
-
-
-const CategoryWrapper = styled.div`
+const CategoryWrapper = styled.div<CategoryWrapperProps>`
   display: flex;
   flex-basis: 0;
   min-width: 0;
@@ -19,6 +22,7 @@ const CategoryWrapper = styled.div`
   flex-grow: 1;
   border-left: 1px solid black;
   border-right: 1px solid black;
+  background-color: ${props => props.dropping ? "lightblue" : "white"};
 `
 
 const TasksWrapper = styled.div`
@@ -29,9 +33,20 @@ const TasksWrapper = styled.div`
 
 export function CategoryComponent(props : {category: Category}){
     const tasks : Task[] = useAppSelector(state => selectTasksByCategories(state, props.category));
+    let ref = useRef(null);
+    const {dropProps, isDropTarget} = useDrop({
+        ref,
+        getDropOperation(types, allowedOperations){
+            return types.has("application/task") ? "copy" : "cancel";
+        },
+        async onDrop(e){
+            const item = e.items.find((item) => item.kind == "text") as TextDropItem;
+            console.log(JSON.parse(await item.getText("application/task")) as Task)
+        }
+    })
 
     return (
-        <CategoryWrapper>
+        <CategoryWrapper {...dropProps} tabIndex={0} ref={ref} dropping={!!isDropTarget}>
             <TitleWrapper>
                 <CategoryTitle>{props.category.name}</CategoryTitle>
             </TitleWrapper>

@@ -2,6 +2,7 @@ import React from "react";
 import {Task} from "../../app/types";
 import styled from "styled-components";
 import {TitleWrapper} from "../helpers/TitleWrapper";
+import {useDrag} from "react-aria";
 
 const TaskWrapper = styled.div`
   display: flex;
@@ -30,8 +31,16 @@ const Description = styled.p`
 `
 
 export function TaskComponent(props : {task: Task}){
+    const {dragProps, isDragging} = useDrag({
+        getItems(){
+            return [{
+                'application/task' : JSON.stringify(props.task)
+            }]
+        }
+    });
+
     return (
-        <TaskWrapper color={props.task.color}>
+        <TaskWrapper {...dragProps} tabIndex={0} color={props.task.color}>
             <TitleWrapper>
                 <TaskTitle>{props.task.title}</TaskTitle>
             </TitleWrapper>
