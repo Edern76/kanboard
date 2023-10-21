@@ -4,6 +4,12 @@ import bodyParser from 'body-parser';
 const app : Express = express();
 app.use(bodyParser.json());
 
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3001");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 interface Category {
   name: string;
 }
@@ -16,22 +22,66 @@ interface Task {
 }
 
 const categories: Category[] = [
-  { name: 'Category 1' },
-  { name: 'Category 2' },
+  { name: 'Personal' },
+  { name: 'Work' },
+  { name: 'Shopping' },
 ];
 
+//ChatGPT generated example data
 const tasks: Task[] = [
   {
-    title: 'Task 1',
-    description: 'Description for Task 1',
-    category: 'Category 1',
-    color: '#FF5733',
+    title: 'Buy Groceries',
+    description: 'Buy apples, bananas, and bread at the store.',
+    category: 'Shopping',
+    color: '#FFDD88', // Light yellow
   },
   {
-    title: 'Task 2',
-    description: 'Description for Task 2',
-    category: 'Category 2',
-    color: '#3366FF',
+    title: 'Project Presentation',
+    description: 'Prepare slides and rehearse for the project presentation.',
+    category: 'Work',
+    color: '#88FF88', // Light green
+  },
+  {
+    title: 'Exercise',
+    description: 'Go for a 30-minute jog in the park.',
+    category: 'Personal',
+    color: '#FF8888', // Light red
+  },
+  {
+    title: 'Plan Vacation',
+    description: 'Research and plan a summer vacation destination.',
+    category: 'Personal',
+    color: '#FFBB88', // Light orange
+  },
+  {
+    title: 'Finish Report',
+    description: 'Complete the monthly sales report for the team.',
+    category: 'Work',
+    color: '#88DDFF', // Light blue
+  },
+  {
+    title: 'Buy Milk',
+    description: "Don't forget to buy a carton of milk.",
+    category: 'Shopping',
+    color: '#FFDD88', // Light yellow
+  },
+  {
+    title: 'Task Assignment',
+    description: 'Assign tasks to team members for the project.',
+    category: 'Work',
+    color: '#88FF88', // Light green
+  },
+  {
+    title: 'Buy Bread',
+    description: 'Pick up a loaf of your favorite bread.',
+    category: 'Shopping',
+    color: '#FFDD88', // Light yellow
+  },
+  {
+    title: 'Workshop Preparation',
+    description: 'Gather materials for the upcoming workshop.',
+    category: 'Work',
+    color: '#88FF88', // Light green
   },
 ];
 
