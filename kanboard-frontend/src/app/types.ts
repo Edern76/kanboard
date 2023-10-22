@@ -1,8 +1,10 @@
 export interface Category{
+    id: number;
     name: string;
 }
 
 export interface TaskDTO{
+    id: number
     title: string
     description: string;
     category: string;
@@ -10,6 +12,7 @@ export interface TaskDTO{
 }
 
 export interface Task{
+    id: number;
     title: string;
     description: string;
     category: Category;

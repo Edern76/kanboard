@@ -1,7 +1,7 @@
 import React, {useRef} from "react";
 import {Category, Task} from "../../app/types";
-import {useAppSelector} from "../../app/hooks";
-import {selectTasksByCategories} from "../../slices/kanboard/kanboardSlice";
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
+import {selectTasksByCategories, updateTaskThunk} from "../../slices/kanboard/kanboardSlice";
 import styled from "styled-components";
 import {TitleWrapper} from "../helpers/TitleWrapper";
 import {TaskComponent} from "../task/TaskComponent";
@@ -32,8 +32,11 @@ const TasksWrapper = styled.div`
 `
 
 export function CategoryComponent(props : {category: Category}){
-    const tasks : Task[] = useAppSelector(state => selectTasksByCategories(state, props.category));
+    const dispatch = useAppDispatch();
     let ref = useRef(null);
+
+    const tasks : Task[] = useAppSelector(state => selectTasksByCategories(state, props.category));
+
     const {dropProps, isDropTarget} = useDrop({
         ref,
         getDropOperation(types, allowedOperations){
@@ -41,7 +44,9 @@ export function CategoryComponent(props : {category: Category}){
         },
         async onDrop(e){
             const item = e.items.find((item) => item.kind == "text") as TextDropItem;
-            console.log(JSON.parse(await item.getText("application/task")) as Task)
+            const task = JSON.parse(await item.getText("application/task")) as Task;
+            task.category = props.category;
+            dispatch(updateTaskThunk(task));
         }
     })
 

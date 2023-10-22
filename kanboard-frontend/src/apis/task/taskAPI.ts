@@ -12,3 +12,10 @@ export async function fetchTasks() : Promise<TaskDTO[]>{
     )
     return data;
 }
+
+export async function updateTask(task : TaskDTO) : Promise<void>{
+    const {status} = await axios.put(
+        "http://localhost:3000/tasks",
+        task
+    )
+}

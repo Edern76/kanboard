@@ -1,7 +1,7 @@
 import {Category, Task, TaskDTO} from "../../app/types";
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {fetchCategories} from "../../apis/category/categoryAPI";
-import {fetchTasks} from "../../apis/task/taskAPI";
+import {fetchTasks, updateTask} from "../../apis/task/taskAPI";
 import {RootState} from "../../app/store";
 import _ from "lodash";
 
@@ -32,6 +32,16 @@ export const updateKanboardState = createAsyncThunk(
             throw error;
         }
     }
+)
+
+export const updateTaskThunk = createAsyncThunk(
+    'board/updateTask',
+    async (task:Task, {dispatch}) => {
+        await updateTask(taskToDto(task));
+        dispatch(updateKanboardState());
+        return true;
+    }
+
 )
 
 export const kanboardSlice = createSlice({
@@ -71,8 +81,9 @@ const tasksDTOToTasks = (categories: Category[], dtos: TaskDTO[]) : Task[] => {
     const result : Task[] = [];
     dtos.forEach((value:TaskDTO) => {
       const category = categories.find((cat:Category) => cat.name === value.category);
-      if (category == undefined) {throw new Error(`No category found with the name ${value.category}`)}
+      if (category === undefined) {throw new Error(`No category found with the name ${value.category}`)}
       result.push({
+          id: value.id,
           title: value.title,
           category: category,
           color: value.color,
@@ -80,6 +91,16 @@ const tasksDTOToTasks = (categories: Category[], dtos: TaskDTO[]) : Task[] => {
       } as Task)
     });
     return result
+}
+
+const taskToDto = (task : Task) : TaskDTO =>{
+    return {
+        id: task.id,
+        title: task.title,
+        description: task.description,
+        color: task.color,
+        category: task.category.name
+    } as TaskDTO;
 }
 
 export default kanboardSlice.reducer
