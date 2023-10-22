@@ -7,6 +7,7 @@ import {TitleWrapper} from "../helpers/TitleWrapper";
 import {TaskComponent} from "../task/TaskComponent";
 import {DropZone} from 'react-aria-components';
 import {TextDropItem, useDrop} from "react-aria";
+import {TaskAdder} from "../taskAdder/TaskAdder";
 
 const CategoryTitle = styled.h2`
 `
@@ -59,6 +60,7 @@ export function CategoryComponent(props : {category: Category}){
                 {tasks.map((task:Task) =>(
                     <TaskComponent task={task}/>
                 ))}
+                <TaskAdder category={props.category}/>
             </TasksWrapper>
         </CategoryWrapper>
     )

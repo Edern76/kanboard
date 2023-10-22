@@ -4,10 +4,10 @@ export interface Category{
 }
 
 export interface TaskDTO{
-    id: number
+    id: number | undefined;
     title: string
     description: string;
-    category: string;
+    category: number;
     color: string;
 }
 

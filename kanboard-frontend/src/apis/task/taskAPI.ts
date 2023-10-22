@@ -19,3 +19,10 @@ export async function updateTask(task : TaskDTO) : Promise<void>{
         task
     )
 }
+
+export async function createTask(task: TaskDTO) : Promise<void>{
+    const {status} = await axios.post(
+        "http://localhost:3000/tasks",
+        task
+    );
+}

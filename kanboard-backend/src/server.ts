@@ -21,7 +21,7 @@ interface Task {
   	id: number;
   	title: string;
   	description: string;
-  	category: string;
+  	category: number;
   	color: string;
 }
 
@@ -38,63 +38,63 @@ let tasks: Task[] = [
 		id:0,
 		title: 'Buy Groceries',
 		description: 'Buy apples, bananas, and bread at the store.',
-		category: 'Shopping',
+		category: 2,
 		color: '#FFDD88', // Light yellow
 	},
 	{
 		id:1,
 		title: 'Project Presentation',
 		description: 'Prepare slides and rehearse for the project presentation.',
-		category: 'Work',
+		category: 1,
 		color: '#88FF88', // Light green
 	},
 	{
 		id:2,
 		title: 'Exercise',
 		description: 'Go for a 30-minute jog in the park.',
-		category: 'Personal',
+		category: 0,
 		color: '#FF8888', // Light red
 	},
 	{
 		id:3,
 		title: 'Plan Vacation',
 		description: 'Research and plan a summer vacation destination.',
-		category: 'Personal',
+		category: 0,
 		color: '#FFBB88', // Light orange
 	},
 	{
 		id:4,
 		title: 'Finish Report',
 		description: 'Complete the monthly sales report for the team.',
-		category: 'Work',
+		category: 1,
 		color: '#88DDFF', // Light blue
 	},
 	{
 		id:5,
 		title: 'Buy Milk',
 		description: "Don't forget to buy a carton of milk.",
-		category: 'Shopping',
+		category: 2,
 		color: '#FFDD88', // Light yellow
 	},
 	{
 		id:6,
 		title: 'Task Assignment',
 		description: 'Assign tasks to team members for the project.',
-		category: 'Work',
+		category: 1,
 		color: '#88FF88', // Light green
 	},
 	{
 		id:7,
 		title: 'Buy Bread',
 		description: 'Pick up a loaf of your favorite bread.',
-		category: 'Shopping',
+		category: 2,
 		color: '#FFDD88', // Light yellow
 	},
 	{
 		id:8,
 		title: 'Workshop Preparation',
 		description: 'Gather materials for the upcoming workshop.',
-		category: 'Work',
+		category: 1,
 		color: '#88FF88', // Light green
 	},
 ];
@@ -116,13 +116,26 @@ app.put('/tasks', (req: Request, res: Response) => {
 	if (!taskToUpdate){
 		return res.status(404).json({error: `No task found with id ${updatedTask.id}`})
 	}
-	if (!categories.some((c:Category) => c.name === updatedTask.category)){
-		return res.status(404).json({error: `Couldn't find category named ${updatedTask.category}`})
+	if (!categories.some((c:Category) => c.id === updatedTask.category)){
+		return res.status(404).json({error: `Couldn't find category with the ID ${updatedTask.id}`})
 	}
 	tasks = tasks.filter((t:Task) => !_.isEqual(t, taskToUpdate));
 	tasks.push(updatedTask);
 	return res.status(204).json({message : "Task updated successfully"});
 });
+
+//Create a task
+app.post('/tasks', (req: Request, res: Response) => {
+	const {title, description, category, color} = req.body;
+	if (!categories.some((c:Category) => c.id === category)) {
+		return res.status(404).json({error: `Couldn't find category with the ID ${category}`});
+	}
+	const id = tasks.reduce(function(prev, current){
+		return (prev && prev.id > current.id) ? prev : current;
+	}).id + 1;
+	tasks.push({id:id, title:title, description:description, category:category, color:color} as Task);
+	return res.status(201).json({message : "Task created successfully"})
+})
 
 // Add a new category
 app.post('/categories', (req: Request, res: Response) => {
@@ -132,7 +145,7 @@ app.post('/categories', (req: Request, res: Response) => {
 	}
 	const id = categories.reduce(function(prev, current){
 		return (prev && prev.id > current.id) ? prev : current;
-	}).id;
+	}).id + 1;
 
 	categories.push({ id:id, name:name } as Category);
 	res.status(201).json({ message: 'Category added successfully' });

@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@mui/material": "^5.14.14",
+    "@mui/styled-engine": "npm:@mui/styled-engine-sc@latest",
     "@mui/styled-engine-sc": "^6.0.0-alpha.2",
     "@reduxjs/toolkit": "^1.9.7",
     "@testing-library/jest-dom": "^5.17.0",
@@ -15,6 +16,7 @@
     "@types/react-dom": "^18.2.14",
     "axios": "^1.5.1",
     "lodash": "^4.17.21",
+    "mui-color-input": "^2.0.1",
     "react": "^18.2.0",
     "react-aria": "^3.29.1",
     "react-aria-components": "^1.0.0-beta.2",
@@ -25,6 +27,9 @@
     "styled-components": "^6.1.0",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
+  },
+  "resolutions": {
+    "@mui/styled-engine": "npm:@mui/styled-engine-sc@latest"
   },
   "scripts": {
     "start": "cross-env PORT=3001 react-scripts start",
