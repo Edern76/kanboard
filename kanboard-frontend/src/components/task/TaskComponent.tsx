@@ -1,4 +1,4 @@
-import React from "react";
+import React, {memo} from "react";
 import {Task} from "../../app/types";
 import styled from "styled-components";
 import {TitleWrapper} from "../helpers/TitleWrapper";
@@ -31,7 +31,7 @@ const Description = styled.p`
   text-align: center;
 `
 
-export function TaskComponent(props : {task: Task}){
+export const TaskComponent = React.memo(function TaskComponent(props : {task: Task}){
     const {dragProps, isDragging} = useDrag({
         getItems(){
             return [{
@@ -50,4 +50,4 @@ export function TaskComponent(props : {task: Task}){
             </DescriptionWrapper>
         </TaskWrapper>
     )
-}
+})

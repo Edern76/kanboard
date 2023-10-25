@@ -1,9 +1,10 @@
-import React from "react";
+import React, {useCallback} from "react";
 import styled from "styled-components";
 import {Category} from "../../app/types";
 import {useHover, usePress} from "react-aria";
 import {useAppDispatch} from "../../app/hooks";
 import {openNewTaskModal} from "../../slices/kanboard/kanboardSlice";
+import {PressEvent} from "react-aria-components";
 
 
 interface TaskAdderWrapperProps{
@@ -29,17 +30,16 @@ const TaskAdderSymbol = styled.p`
   padding-bottom: 27px;
 `
 
-export function TaskAdder(props : {category:Category}){
+export const TaskAdder = React.memo(function TaskAdder(props : {category:Category}){
     const dispatch = useAppDispatch();
+    const modalCallback = useCallback((e:PressEvent) => { dispatch(openNewTaskModal(props.category));}, [])
     const { hoverProps, isHovered } = useHover({});
     const {pressProps, isPressed} = usePress({
-        onPressEnd : (e) => {
-            dispatch(openNewTaskModal(props.category));
-        }
+        onPressEnd : modalCallback
     })
     return (
         <TaskAdderWrapper {...hoverProps} {...pressProps} hovered={isHovered}>
             <TaskAdderSymbol>+</TaskAdderSymbol>
         </TaskAdderWrapper>
     )
-}
+})
